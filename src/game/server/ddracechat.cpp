@@ -608,7 +608,7 @@ void CGameContext::ConShop(IConsole::IResult *pResult, void *pUserData)
 	if (!CheckClientID(pResult->m_ClientID))
 		return;
 	char aBuf[512];
-	str_format(aBuf, sizeof(aBuf), "room_key | %d | 16 | disconnect", g_Config.m_SvRoomPrice);
+	str_format(aBuf, sizeof(aBuf), "placeholder");
 
 	if (!str_comp_nocase(pResult->GetString(0), "help"))
 	{
@@ -619,82 +619,20 @@ void CGameContext::ConShop(IConsole::IResult *pResult, void *pUserData)
 		pSelf->SendChatTarget(pResult->m_ClientID, "If you want to buy an item you have to press f3.");
 		pSelf->SendChatTarget(pResult->m_ClientID, "Then a confirmation will pop up and you have to press f3 again to confirm.");
 		pSelf->SendChatTarget(pResult->m_ClientID, "NOTICE: f3 and f4 may not work for you, you have to press VOTE YES for f3 and VOTE NO for f4.");
-
-		if (pSelf->GetShopBot() != -1)
-		{
-			char aShopBot[128];
-			str_format(aShopBot, sizeof(aShopBot), "If you want to see the shop, watch '%s' in '/pause'.", pSelf->Server()->ClientName(pSelf->GetShopBot()));
-			pSelf->SendChatTarget(pResult->m_ClientID, "-----------------------------");
-			pSelf->SendChatTarget(pResult->m_ClientID, aShopBot);
-		}
 	}
 	else
 	{
-		/*
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"***************************");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"          ~ SHOP ~");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"***************************");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"Type '/buy <itemname>'");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"***************************");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"ItemName | Price | Needed Level | OwnTime:");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"rainbow       1 500 | 5 | dead");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"bloody         3 500 | 15 | dead");
-		//pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		//	"atom         3 500 money | 3 | dead");
-		//pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		//	"trail         3 500 money | 3 | dead");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"chidraqul     250 | 2 | disconnect");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"shit              5 | 0 | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		aBuf);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"police		   100 000 | 18 | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"taser		  50 000 | Police[3] | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"pvp_arena_ticket     150 | 0 | 1 use");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"ninjajetpack     10 000 | 21 | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"spawn_shotgun     600 000 | 38 | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"spawn_grenade     600 000 | 38 | forever");
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Shop",
-		"spawn_rifle     600 000 | 38 | forever");
-		*/
-
 		char aShop[2048];
 		str_format(aShop, sizeof(aShop),
 			"***************************\n"
 			"        ~  S H O P  ~      \n"
 			"***************************\n"
-			"Usage: '/buy (itemname)'\n"
-			"***************************\n"
-			"Item | Price | Level | Time:\n"
-			"-------+------+--------+-------\n"
-			"rainbow  | 1 500 | 5 | dead\n"
-			"bloody    | 3 500 | 15 | dead\n"
-			"chidraqul | 250 | 2 | disconnect\n"
-			"shit   | 5 | 0 | forever\n"
-			"%s\n"
-			"police | 100 000 | 18 | forever\n"
-			"taser | 50 000 | Police[3] | forever\n"
-			"pvp_arena_ticket | 150 | 0 | forever\n"
-			"ninjajetpack | 10 000 | 21 | forever\n"
-			"spawn_shotgun | 600 000 | 33 | forever\n"
-			"spawn_grenade | 600 000 | 33 | forever\n"
-			"spawn_rifle | 600 000 | 33 | forever\n"
-			"spooky_ghost | 1 000 000 | 1 | forever\n", aBuf);
+			"/upgr hammer\n"
+			"/upgr gun\n"
+			"/upgr shotgun\n"
+			"/upgr grenade\n"
+			"/upgr rifle\n"
+			"/upgr life\n");
 
 		pSelf->AbuseMotd(aShop, pResult->m_ClientID);
 	}
@@ -2276,12 +2214,11 @@ void CGameContext::ConTopPoints(IConsole::IResult *pResult, void *pUserData)
 }
 #endif
 
-void CGameContext::ConBuy(IConsole::IResult *pResult, void *pUserData)
+void CGameContext::ConUpgrade(IConsole::IResult *pResult, void *pUserData)
 {
 #if defined(CONF_DEBUG)
 	CALL_STACK_ADD();
 #endif
-
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	if (!CheckClientID(pResult->m_ClientID))
 		return;
@@ -2290,548 +2227,68 @@ void CGameContext::ConBuy(IConsole::IResult *pResult, void *pUserData)
 	if (!pPlayer)
 		return;
 
-	CCharacter* pChr = pPlayer->GetCharacter();
-	if (!pChr)
-		return;
-
-	if ((g_Config.m_SvShopState == 1) && !pChr->m_InShop)
-	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "You have to be in the shop to buy some items.");
-		return;
-	}
-
 	if (pResult->NumArguments() != 1)
 	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "Unknown item. Type '/buy <itemname>' use '/shop' to see the full itemlist.");
+		pSelf->SendChatTarget(pResult->m_ClientID, "Unknown upgrade. Type '/upgr <upgrade>' use '/shop' to see the full list.");
 		return;
 	}
 
-	int ItemID = -1;
+	if (pPlayer->m_coins <= 0)
+	{
+		pSelf->SendChatTarget(pResult->m_ClientID, "You don't own enough coins.");
+		return;
+	}
 
 	char aItem[32];
+	char aBuf[128];
 	str_copy(aItem, pResult->GetString(0), 32);
 
-	if (!str_comp_nocase(aItem, "rainbow"))
-		ItemID = 1;
-	else if (!str_comp_nocase(aItem, "bloody"))
-		ItemID = 2;
-	else if (!str_comp_nocase(aItem, "chidraqul"))
-		ItemID = 3;
-	else if (!str_comp_nocase(aItem, "shit"))
-		ItemID = 4;
-	else if (!str_comp_nocase(aItem, "room_key"))
-		ItemID = 5;
-	else if (!str_comp_nocase(aItem, "police"))
-		ItemID = 6;
-	else if (!str_comp_nocase(aItem, "taser"))
-		ItemID = 7;
-	else if (!str_comp_nocase(aItem, "pvp_arena_ticket"))
-		ItemID = 8;
-	else if (!str_comp_nocase(aItem, "ninjajetpack"))
-		ItemID = 9;
-	else if (!str_comp_nocase(aItem, "spawn_shotgun"))
-		ItemID = 10;
-	else if (!str_comp_nocase(aItem, "spawn_grenade"))
-		ItemID = 11;
-	else if (!str_comp_nocase(aItem, "spawn_rifle"))
-		ItemID = 12;
-	else if (!str_comp_nocase(aItem, "spooky_ghost"))
-		ItemID = 13;
-	else
+	if (!str_comp_nocase(aItem, "hammer"))
 	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "Invalid shop item. Choose another one.");
-		return;
+		pPlayer->m_coins--;
+		pPlayer->m_hammer++;
+		str_format(aBuf, sizeof(aBuf), "hammer is now level %d!", pPlayer->m_hammer);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
-
-	pChr->BuyItem(ItemID);
-
-	return;
-
-	//moved the buy system to Character.cpp ----> BuyItem()
-
-	/*CGameContext *pSelf = (CGameContext *)pUserData;
-	if (!CheckClientID(pResult->m_ClientID))
-		return;
-
-	CPlayer *pPlayer = pSelf->m_apPlayers[pResult->m_ClientID];
-	if (!pPlayer)
-		return;
-
-	CCharacter* pChr = pPlayer->GetCharacter();
-	if (!pChr)
-		return;
-
-	if ((g_Config.m_SvShopState == 1) && !pChr->m_InShop)
+	else if (!str_comp_nocase(aItem, "gun"))
 	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "You have to be in the shop to buy some items.");
-		return;
+		pPlayer->m_coins--;
+		pPlayer->m_gun++;
+		str_format(aBuf, sizeof(aBuf), "gun is now level %d!", pPlayer->m_gun);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
-
-	if (pResult->NumArguments() != 1)
+	else if (!str_comp_nocase(aItem, "shotgun"))
 	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "Unknown item. Type '/buy <itemname>' use '/shop' to see the full itemlist.");
-		return;
+		pPlayer->m_coins--;	
+		pPlayer->m_shotgun++;
+		str_format(aBuf, sizeof(aBuf), "shotgun is now level %d!", pPlayer->m_shotgun);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
-
-	char aBuf[256];
-	char aItem[32];
-	str_copy(aItem, pResult->GetString(0), 32);
-
-	if (!str_comp_nocase(aItem, "police"))
+	else if (!str_comp_nocase(aItem, "grenade"))
 	{
-		if (pPlayer->m_PoliceRank == 0)
-		{
-			if (pPlayer->m_level < 18)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 18 to buy police.");
-				return;
-			}
-		}
-		else if (pPlayer->m_PoliceRank == 1)
-		{
-			if (pPlayer->m_level < 25)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 25 to upgrade police to level 2.");
-				return;
-			}
-		}
-		else if (pPlayer->m_PoliceRank == 2)
-		{
-			if (pPlayer->m_level < 30)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 30 to upgrade police to level 3.");
-				return;
-			}
-		}
-		else if (pPlayer->m_PoliceRank == 3)
-		{
-			if (pPlayer->m_level < 40)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 40 to upgrade police to level 4.");
-				return;
-			}
-		}
-		else if (pPlayer->m_PoliceRank == 4)
-		{
-			if (pPlayer->m_level < 50)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 50 to upgrade police to level 5.");
-				return;
-			}
-		}
-
-
-		if (pPlayer->m_PoliceRank > 2)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already bought maximum police lvl.");
-			return;
-		}
-
-		if (pPlayer->m_money >= 100000)
-		{
-			pPlayer->MoneyTransaction(-100000, "-100.000 money. (bought 'police')");
-			pPlayer->m_PoliceRank++;
-			str_format(aBuf, sizeof(aBuf), "You bought PoliceRank[%d]!", pPlayer->m_PoliceRank);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Not enough money! You need 100.000 money.");
-		}
+		pPlayer->m_coins--;	
+		pPlayer->m_grenade++;
+		str_format(aBuf, sizeof(aBuf), "grenade is now level %d!", pPlayer->m_grenade);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
-	else if (!str_comp_nocase(aItem, "taser"))
+	else if (!str_comp_nocase(aItem, "rifle"))
 	{
-		if (pPlayer->m_PoliceRank < 3)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't own a weapon license.");
-			return;
-		}
-
-		if (pPlayer->m_TaserLevel == 0)
-		{
-			pPlayer->m_TaserPrice = 50000;
-		}
-		else if (pPlayer->m_TaserLevel == 1)
-		{
-			pPlayer->m_TaserPrice = 75000;
-		}
-		else if (pPlayer->m_TaserLevel == 2)
-		{
-			pPlayer->m_TaserPrice = 100000;
-		}
-		else if (pPlayer->m_TaserLevel == 3)
-		{
-			pPlayer->m_TaserPrice = 150000;
-		}
-		else if (pPlayer->m_TaserLevel == 4)
-		{
-			pPlayer->m_TaserPrice = 200000;
-		}
-		else if (pPlayer->m_TaserLevel == 5)
-		{
-			pPlayer->m_TaserPrice = 200000;
-		}
-		else if (pPlayer->m_TaserLevel == 6)
-		{
-			pPlayer->m_TaserPrice = 200000;
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Taser already max level.");
-			return;
-		}
-
-		if (pPlayer->m_money < pPlayer->m_TaserPrice)
-		{
-			str_format(aBuf, sizeof(aBuf), "Not enough money to upgrade taser. You need %d money.", pPlayer->m_TaserPrice);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			return;
-		}
-
-		str_format(aBuf, sizeof(aBuf), "-%d money. (bought 'taser')", pPlayer->m_TaserPrice);
-		pPlayer->MoneyTransaction(-pPlayer->m_TaserPrice, aBuf);
-
-
-		pPlayer->m_TaserLevel++;
-		if (pPlayer->m_TaserLevel == 1)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought a taser. (Type '/taser help' for all cmds)");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Taser has been upgraded.");
-		}
+		pPlayer->m_coins--;	
+		pPlayer->m_rifle++;
+		str_format(aBuf, sizeof(aBuf), "rifle is now level %d!", pPlayer->m_rifle);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
-	else if (!str_comp_nocase(aItem, "shit"))
+	else if (!str_comp_nocase(aItem, "life"))
 	{
-		if (pPlayer->m_money >= 5)
-		{
-			pPlayer->MoneyTransaction(-5, "-5 money. (bought 'shit')");
-
-			pPlayer->m_shit++;
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought shit.");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "room_key"))
-	{
-		if (pPlayer->m_level < 16)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You need to be Lv.16 or higher to buy a key.");
-			return;
-		}
-		if (pPlayer->m_BoughtRoom)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own this item.");
-			return;
-		}
-		if (g_Config.m_SvRoomState == 0)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Room has been turned off by admin.");
-			return;
-		}
-		if (pPlayer->m_money >= g_Config.m_SvRoomPrice)
-		{
-			str_format(aBuf, sizeof(aBuf), "-%d money. (bought 'room_key')", g_Config.m_SvRoomPrice);
-			pPlayer->MoneyTransaction(-g_Config.m_SvRoomPrice, aBuf);
-			pPlayer->m_BoughtRoom = true;
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought a key. You can now enter the bankroom until you disconnect.");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money! You need 5.000 money.");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "chidraqul"))
-	{
-		if (pPlayer->m_level < 2)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You need to be Lv.2 or higher to buy 'chidraqul'.");
-			return;
-		}
-
-
-		if (pPlayer->m_BoughtGame)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own this game.");
-			return;
-		}
-
-
-		if (pPlayer->m_money >= 250)
-		{
-			pPlayer->MoneyTransaction(-250, "-250 money. (bought 'chidraqul')");
-			pPlayer->m_BoughtGame = true;
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought 'chidraqul' until you disconnect. Check '/chidraqul info' for more information.");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money! You need 250 money.");
-		}
-	}
-	// buy cosmetic feature
-	else if (!str_comp_nocase(aItem, "rainbow"))
-	{
-		if (pPlayer->GetCharacter()->m_Rainbow)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own rainbow.");
-			return;
-		}
-
-		if (pPlayer->m_level < 5)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Your level is too low! You need to be Lv.5 to buy rainbow.");
-		}
-		else
-		{
-			if (pPlayer->m_money >= 1500)
-			{
-				pPlayer->MoneyTransaction(-1500, "-1.500 money. (bought 'rainbow')");
-				pPlayer->GetCharacter()->m_Rainbow = true;
-				pSelf->SendChatTarget(pResult->m_ClientID, "You bought rainbow until death.");
-			}
-			else
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money! You need 1.500 money.");
-			}
-		}
-	}
-	else if (!str_comp_nocase(aItem, "bloody"))
-	{
-		if (pPlayer->GetCharacter()->m_Bloody)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own bloody.");
-			return;
-		}
-
-		if (pPlayer->m_level < 15)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Your level is too low! You need to be Lv.15 to buy bloody.");
-		}
-		else
-		{
-			if (pPlayer->m_money >= 3500)
-			{
-				pPlayer->MoneyTransaction(-3500, "-3.500 money. (bought 'bloody')");
-				pPlayer->GetCharacter()->m_Bloody = true;
-				pSelf->SendChatTarget(pResult->m_ClientID, "You bought bloody until death.");
-			}
-			else
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money! You need 3 500.");
-			}
-		}
-	}
-	/*else if (!str_comp_nocase(aItem, "atom"))
-	{
-		if (pPlayer->GetCharacter()->m_Atom)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own atom");
-			return;
-		}
-
-		if (pPlayer->m_level < 15)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "your level is too low! you need level 15 to buy atom.");
-		}
-		else
-		{
-			if (pPlayer->m_money >= 3500)
-			{
-				pPlayer->MoneyTransaction(-3500, "-3500 bought pvp_arena_ticket");
-				pPlayer->GetCharacter()->m_Atom = true;
-				pSelf->SendChatTarget(pResult->m_ClientID, "you bought atom until death.");
-			}
-			else
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "you don't have enough money! You need 3 500.");
-			}
-		}
-	}
-	else if (!str_comp_nocase(aItem, "trail"))
-	{
-		if (pPlayer->GetCharacter()->m_Trail)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "you already own trail");
-			return;
-		}
-
-		if (pPlayer->m_level < 15)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "your level is too low! you need level 15 to buy trail.");
-		}
-		else
-		{
-			if (pPlayer->m_money >= 3500)
-			{
-				pPlayer->MoneyTransaction(-3500, "-3500 bought pvp_arena_ticket");
-				pPlayer->GetCharacter()->m_Trail = true;
-				pSelf->SendChatTarget(pResult->m_ClientID, "you bought trail until death.");
-			}
-			else
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "you don't have enough money! You need 3 500.");
-			}
-		}
-	}*//*
-	else if (!str_comp_nocase(aItem, "pvp_arena_ticket"))
-	{
-		if (pPlayer->m_money >= 150)
-		{
-			pPlayer->MoneyTransaction(-150, "-150 money. (bought 'pvp_arena_ticket')");
-			pPlayer->m_pvp_arena_tickets++;
-
-			str_format(aBuf, sizeof(aBuf), "You bought a pvp_arena_ticket. You have %d tickets.", pPlayer->m_pvp_arena_tickets);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money! You need 150 money.");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "ninjajetpack"))
-	{
-		if (pPlayer->m_level < 21)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 21 to buy ninjajetpack.");
-			return;
-		}
-		else if (pPlayer->m_NinjaJetpackBought)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already own ninjajetpack.");
-		}
-		else if (pPlayer->m_money >= 10000)
-		{
-			pPlayer->MoneyTransaction(-10000, "-10000 money. (bought 'ninjajetpack')");
-
-			pPlayer->m_NinjaJetpackBought = 1;
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought ninjajetpack. Turn it on using '/ninjajetpack'.");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "spawn_shotgun"))
-	{
-		if (pPlayer->m_level < 33)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 33 to buy spawn shotgun.");
-			return;
-		}
-		else if (pPlayer->m_SpawnWeaponShotgun == 5)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already have the maximum level for spawn shotgun.");
-		}
-		else if (pPlayer->m_money >= 600000)
-		{
-			pPlayer->MoneyTransaction(-600000, "-600000 money. (bought 'spawn_shotgun')");
-
-			pPlayer->m_SpawnWeaponShotgun++;
-			if (pPlayer->m_SpawnWeaponShotgun == 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "You bought spawn shotgun. For more infos check '/spawnweaponsinfo'.");
-			}
-			else if (pPlayer->m_SpawnWeaponShotgun > 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Spawn shotgun upgraded.");
-			}
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "spawn_grenade"))
-	{
-		if (pPlayer->m_level < 33)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 33 to buy spawn grenade.");
-			return;
-		}
-		else if (pPlayer->m_SpawnWeaponGrenade == 5)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already have the maximum level for spawn grenade.");
-		}
-		else if (pPlayer->m_money >= 600000)
-		{
-			pPlayer->MoneyTransaction(-600000, "-600000 money. (bought 'spawn_grenade')");
-
-			pPlayer->m_SpawnWeaponGrenade++;
-			if (pPlayer->m_SpawnWeaponGrenade == 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "You bought spawn grenade. For more infos check '/spawnweaponsinfo'.");
-			}
-			else if (pPlayer->m_SpawnWeaponGrenade > 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Spawn grenade upgraded.");
-			}
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "spawn_rifle"))
-	{
-		if (pPlayer->m_level < 33)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 33 to buy spawn rifle.");
-			return;
-		}
-		else if (pPlayer->m_SpawnWeaponRifle == 5)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already have the maximum level for spawn rifle.");
-		}
-		else if (pPlayer->m_money >= 600000)
-		{
-			pPlayer->MoneyTransaction(-600000, "-600000 money. (bought 'spawn_rifle')");
-
-			pPlayer->m_SpawnWeaponRifle++;
-			if (pPlayer->m_SpawnWeaponRifle == 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "You bought spawn rifle. For more infos check '/spawnweaponsinfo'.");
-			}
-			else if (pPlayer->m_SpawnWeaponRifle > 1)
-			{
-				pSelf->SendChatTarget(pResult->m_ClientID, "Spawn rifle upgraded.");
-			}
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
-	}
-	else if (!str_comp_nocase(aItem, "spooky_ghost"))
-	{
-		if (pPlayer->m_level < 1)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "Level is too low! You need lvl 1 to buy the spooky ghost.");
-			return;
-		}
-		else if (pPlayer->m_SpookyGhost)
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You already have the spooky ghost.");
-		}
-		else if (pPlayer->m_money >= 1000000)
-		{
-			pPlayer->MoneyTransaction(-1000000, "-1000000 money. (bought 'spooky_ghost')");
-
-			pPlayer->m_SpookyGhost = 1;
-			pSelf->SendChatTarget(pResult->m_ClientID, "You bought the spooky ghost. For more infos check '/spookyghostinfo'.");
-		}
-		else
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "You don't have enough money!");
-		}
+		pPlayer->m_coins--;	
+		pPlayer->m_life++;
+		str_format(aBuf, sizeof(aBuf), "life is now level %d!", pPlayer->m_life);
+		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
 	}
 	else
 	{
-		pSelf->SendChatTarget(pResult->m_ClientID, "Invalid shop item. Choose another one.");
-	}*/
+		pSelf->SendChatTarget(pResult->m_ClientID, "Invalid upgrade. Choose another one from '/shop'.");
+	}
 }
 
 void CGameContext::ConRegister(IConsole::IResult *pResult, void *pUserData)

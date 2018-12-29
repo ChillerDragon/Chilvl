@@ -97,7 +97,8 @@ CHAT_COMMAND("spookyghostinfo", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConSpookyGhos
 
 //money
 CHAT_COMMAND("shop", "?s", CFGFLAG_CHAT | CFGFLAG_SERVER, ConShop, this, "Shows the list of items that you can '/buy'", 0)
-CHAT_COMMAND("buy", "?s", CFGFLAG_CHAT | CFGFLAG_SERVER, ConBuy, this, "Buy something. To see all buyable items check '/shop'", 0)
+CHAT_COMMAND("upgrade", "?s", CFGFLAG_CHAT | CFGFLAG_SERVER, ConUpgrade, this, "Buy something. To see all buyable items check '/shop'", 0)
+CHAT_COMMAND("upgr", "?s", CFGFLAG_CHAT | CFGFLAG_SERVER, ConUpgrade, this, "Buy something. To see all buyable items check '/shop'", 0)
 CHAT_COMMAND("bank", "?s", CFGFLAG_CHAT | CFGFLAG_SERVER, ConBank, this, "for more info check '/bank'", 0)
 CHAT_COMMAND("gangsterbag", "?sr", CFGFLAG_CHAT | CFGFLAG_SERVER, ConGangsterBag, this, "only for real gangstazzZ", 0)
 CHAT_COMMAND("money", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConMoney, this, "shows your money and last transactions", 0)
