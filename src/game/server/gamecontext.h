@@ -645,6 +645,10 @@ public:
 	};
 	std::vector<CBlockDMA2> m_BlockDMA2;
 
+	// chillvl
+
+	void PrintStats(int ID, int playerID);
+
 private:
 
 	bool m_VoteWillPass;

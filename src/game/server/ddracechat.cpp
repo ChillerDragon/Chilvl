@@ -3354,193 +3354,31 @@ void CGameContext::ConStats(IConsole::IResult * pResult, void * pUserData)
 	if (!pPlayer)
 		return;
 
-	//CCharacter* pChr = pPlayer->GetCharacter();
-	//if (!pChr)
-	//	return;
-
 	char aBuf[512];
 
-	//if (g_Config.m_SvInstagibMode) //pvp stats
-	//{
-	//	if (pResult->NumArguments() > 0) //other players stats
-	//	{
-	//		char aStatsName[32];
-	//		str_copy(aStatsName, pResult->GetString(0), sizeof(aStatsName));
-	//		int StatsID = pSelf->GetCIDByName(aStatsName);
-	//		if (StatsID == -1)
-	//		{
-	//			str_format(aBuf, sizeof(aBuf), "[STATS] Can't find user '%s'", aStatsName);
-	//			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//			return;
-	//		}
-	//		//if (pSelf->m_apPlayers[StatsID]->m_AccountID < 1)
-	//		//{
-	//		//	str_format(aBuf, sizeof(aBuf), "'%s' is not logged in.", aStatsName);
-	//		//	pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		//	return;
-	//		//}
-
-	//		str_format(aBuf, sizeof(aBuf), "====== %s's Stats ======", aStatsName);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, "~~~ Grenade instagib ~~~");
-	//		str_format(aBuf, sizeof(aBuf), "Kills: %d", pSelf->m_apPlayers[StatsID]->m_GrenadeKills);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Deaths: %d", pSelf->m_apPlayers[StatsID]->m_GrenadeDeaths);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Highest spree: %d", pSelf->m_apPlayers[StatsID]->m_GrenadeSpree);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Total shots: %d", pSelf->m_apPlayers[StatsID]->m_GrenadeShots);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		//str_format(aBuf, sizeof(aBuf), "Shots without RJ: %d", pSelf->m_apPlayers[StatsID]->m_GrenadeShotsNoRJ);
-	//		//pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, "~~~ Rifle instagib ~~~");
-	//		str_format(aBuf, sizeof(aBuf), "Kills: %d", pSelf->m_apPlayers[StatsID]->m_RifleKills);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Deaths: %d", pSelf->m_apPlayers[StatsID]->m_RifleDeaths);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Highest spree: %d", pSelf->m_apPlayers[StatsID]->m_RifleSpree);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Total shots: %d", pSelf->m_apPlayers[StatsID]->m_RifleShots);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-
-	//	}
-	//	else //own stats
-	//	{
-	//		pSelf->SendChatTarget(pResult->m_ClientID, "====== Your Stats ======");
-	//		pSelf->SendChatTarget(pResult->m_ClientID, "~~~ Grenade instagib ~~~");
-	//		str_format(aBuf, sizeof(aBuf), "Kills: %d", pPlayer->m_GrenadeKills);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Deaths: %d", pPlayer->m_GrenadeDeaths);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Highest spree: %d", pPlayer->m_GrenadeSpree);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Total shots: %d", pPlayer->m_GrenadeShots);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Shots without RJ: %d", pPlayer->m_GrenadeShotsNoRJ);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Rocketjumps: %d", pPlayer->m_GrenadeShots - pPlayer->m_GrenadeShotsNoRJ);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		//str_format(aBuf, sizeof(aBuf), "Failed shots (no kill, no rj): %d", pPlayer->m_GrenadeShots - (pPlayer->m_GrenadeShots - pPlayer->m_GrenadeShotsNoRJ) - pPlayer->m_GrenadeKills); //can be negative with double and tripple kills but this isnt a bug its a feature xd
-	//		//pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, "~~~ Rifle instagib ~~~");
-	//		str_format(aBuf, sizeof(aBuf), "Kills: %d", pPlayer->m_RifleKills);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Deaths: %d", pPlayer->m_RifleDeaths);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Highest spree: %d", pPlayer->m_RifleSpree);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//		str_format(aBuf, sizeof(aBuf), "Total shots: %d", pPlayer->m_RifleShots);
-	//		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-	//	}
-	//}
-	if (pPlayer->m_IsInstaArena_idm || pPlayer->m_IsInstaArena_gdm || g_Config.m_SvInstagibMode)
+	if (pResult->NumArguments() > 0) //other players stats
 	{
-		if (pResult->NumArguments() > 0) //other players stats
+		char aStatsName[32];
+		str_copy(aStatsName, pResult->GetString(0), sizeof(aStatsName));
+		int StatsID = pSelf->GetCIDByName(aStatsName);
+		if (StatsID == -1)
 		{
-			char aStatsName[32];
-			str_copy(aStatsName, pResult->GetString(0), sizeof(aStatsName));
-			int StatsID = pSelf->GetCIDByName(aStatsName);
-			if (StatsID == -1)
-			{
-				str_format(aBuf, sizeof(aBuf), "[STATS] Can't find user '%s'", aStatsName);
-				pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-				return;
-			}
+			str_format(aBuf, sizeof(aBuf), "[STATS] Can't find user '%s'", aStatsName);
+			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
+			return;
+		}
+		//if (pSelf->m_apPlayers[StatsID]->m_AccountID < 1)
+		//{
+		//	str_format(aBuf, sizeof(aBuf), "'%s' is not logged in.", aStatsName);
+		//	pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
+		//	return;
+		//}
 
-			pSelf->ShowInstaStats(pResult->m_ClientID, StatsID);
-		}
-		else
-		{
-			pSelf->ShowInstaStats(pResult->m_ClientID, pResult->m_ClientID);
-		}
+		pSelf->PrintStats(pResult->m_ClientID, StatsID);
 	}
-	else if (pPlayer->m_IsSurvivaling)
+	else //own stats
 	{
-		if (pResult->NumArguments() > 0) //other players stats
-		{
-			char aStatsName[32];
-			str_copy(aStatsName, pResult->GetString(0), sizeof(aStatsName));
-			int StatsID = pSelf->GetCIDByName(aStatsName);
-			if (StatsID == -1)
-			{
-				str_format(aBuf, sizeof(aBuf), "[STATS] Can't find user '%s'", aStatsName);
-				pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-				return;
-			}
-
-			pSelf->ShowSurvivalStats(pResult->m_ClientID, StatsID);
-		}
-		else
-		{
-			pSelf->ShowSurvivalStats(pResult->m_ClientID, pResult->m_ClientID);
-		}
-	}
-	else //blockcity stats
-	{
-		if (pResult->NumArguments() > 0) //other players stats
-		{
-			char aStatsName[32];
-			str_copy(aStatsName, pResult->GetString(0), sizeof(aStatsName));
-			int StatsID = pSelf->GetCIDByName(aStatsName);
-			if (StatsID == -1)
-			{
-				str_format(aBuf, sizeof(aBuf), "[STATS] Can't find user '%s'", aStatsName);
-				pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-				return;
-			}
-			//if (pSelf->m_apPlayers[StatsID]->m_AccountID < 1)
-			//{
-			//	str_format(aBuf, sizeof(aBuf), "'%s' is not logged in.", aStatsName);
-			//	pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			//	return;
-			//}
-
-			str_format(aBuf, sizeof(aBuf), "--- %s's Stats ---", aStatsName);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Level[%d]", pSelf->m_apPlayers[StatsID]->m_level);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Xp[%d/%d]", pSelf->m_apPlayers[StatsID]->m_xp, pSelf->m_apPlayers[StatsID]->m_neededxp);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Money[%d]", pSelf->m_apPlayers[StatsID]->m_money);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "PvP-Arena Tickets[%d]", pSelf->m_apPlayers[StatsID]->m_pvp_arena_tickets);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			pSelf->SendChatTarget(pResult->m_ClientID, "---- BLOCK ----");
-			str_format(aBuf, sizeof(aBuf), "Points: %d", pSelf->m_apPlayers[StatsID]->m_BlockPoints);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Kills: %d", pSelf->m_apPlayers[StatsID]->m_BlockPoints_Kills);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Deaths: %d", pSelf->m_apPlayers[StatsID]->m_BlockPoints_Deaths);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-
-			//str_format(aBuf, sizeof(aBuf), "Skillgroup: %s %d", pSelf->GetBlockSkillGroup(StatsID), pSelf->m_apPlayers[StatsID]->m_BlockSkill);
-			str_format(aBuf, sizeof(aBuf), "Skillgroup: %s", pSelf->GetBlockSkillGroup(StatsID));
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-
-		}
-		else //own stats
-		{
-			pSelf->SendChatTarget(pResult->m_ClientID, "--- Your Stats ---");
-			str_format(aBuf, sizeof(aBuf), "Level[%d]", pPlayer->m_level);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Xp[%d/%d]", pPlayer->m_xp, pPlayer->m_neededxp);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Money[%d]", pPlayer->m_money);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "PvP-Arena Tickets[%d]", pPlayer->m_pvp_arena_tickets);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			pSelf->SendChatTarget(pResult->m_ClientID, "---- BLOCK ----");
-			str_format(aBuf, sizeof(aBuf), "Points: %d", pPlayer->m_BlockPoints);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Kills: %d", pPlayer->m_BlockPoints_Kills);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-			str_format(aBuf, sizeof(aBuf), "Deaths: %d", pPlayer->m_BlockPoints_Deaths);
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-
-			//str_format(aBuf, sizeof(aBuf), "Skillgroup: %s %d", pSelf->GetBlockSkillGroup(pPlayer->GetCID()), pPlayer->m_BlockSkill);
-			str_format(aBuf, sizeof(aBuf), "Skillgroup: %s", pSelf->GetBlockSkillGroup(pPlayer->GetCID()));
-			pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
-		}
+		pSelf->PrintStats(pResult->m_ClientID, pResult->m_ClientID);
 	}
 	
 }

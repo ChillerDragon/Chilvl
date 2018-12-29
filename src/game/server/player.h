@@ -729,6 +729,16 @@ public:
 	bool m_TROLL166;
 	bool m_TROLL420;
 	bool m_RconFreeze;
+
+	// Chilvl
+
+	int m_coins;
+	int m_hammer;
+	int m_gun;
+	int m_shotgun;
+	int m_grenade;
+	int m_rifle;
+	int m_life;
 };
 
 #endif
