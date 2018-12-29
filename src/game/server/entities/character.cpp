@@ -6921,21 +6921,6 @@ int CCharacter::DDPP_DIE(int Killer, int Weapon, bool fngscore)
 #if defined(CONF_DEBUG)
 	CALL_STACK_ADD();
 #endif
-	char aBuf[256];
-
-
-	if (m_pPlayer->m_IsVanillaModeByTile) //reset vanilla mode but never go out of vanilla mode in survival
-	{
-		m_pPlayer->m_IsVanillaDmg = false;
-		m_pPlayer->m_IsVanillaWeapons = false;
-	}
-	if (m_pPlayer->m_IsSurvivaling)
-	{
-		m_pPlayer->m_IsVanillaDmg = true;
-		m_pPlayer->m_IsVanillaWeapons = true;
-		m_pPlayer->m_IsVanillaCompetetive = true;
-	}
-
 	if (m_pPlayer->m_IsDummy && m_pPlayer->m_DummyMode == 33) //chillintelligenz
 	{
 		CIRestart();
@@ -6961,157 +6946,13 @@ int CCharacter::DDPP_DIE(int Killer, int Weapon, bool fngscore)
 		m_TrailProjs.clear();
 	}
 
-	Killer = BlockPointsMain(Killer, fngscore);
-	BlockSpawnProt(Killer); //idk if this should be included in BlockPointsMain() but spawnkills no matter what kind are evil i guess but then we should rename it to SpawnKillProt() imo
-	//BlockQuestSubDieFuncBlockKill(Killer); //leave this before killing sprees to also have information about killingspree values from dead tees (needed for quest2 lvl6) //included in BlockPointsMain because it handels block kills
-	BlockQuestSubDieFuncDeath(Killer); //only handling quest failed (using external func because the other player is needed and its good to extract it in antoher func and because im funcy now c:) //new reason the first func is blockkill and this one is all kinds of death
-	BlockKillingSpree(Killer); //should be renamed to KillingSpree(); because it is not in BlockPointsMain() func and handels all kinds of kills
-	BlockTourna_Die(Killer);
-	InstagibSubDieFunc(Killer, Weapon);
-	SurvivalSubDieFunc(Killer, Weapon);
-
-	//insta kills //TODO: combine with insta 1on1
-	if (Killer != m_pPlayer->GetCID())
+	CPlayer *pKiller = GameServer()->m_apPlayers[Killer];
+	if (pKiller && m_pPlayer->GetCID() != Killer)
 	{
-		if (GameServer()->m_apPlayers[Killer]->m_IsInstaArena_gdm || GameServer()->m_apPlayers[Killer]->m_IsInstaArena_idm)
-		{
-			GameServer()->DoInstaScore(3, Killer);
-		}
-		else if (g_Config.m_SvDDPPscore == 0)
-		{
-			GameServer()->m_apPlayers[Killer]->m_Score += 3;
-		}
+		pKiller->m_xp++;
+		GameServer()->SendChatTarget(Killer, "+1 xp");
 	}
 
-	//insta 1on1
-	if (GameServer()->m_apPlayers[Killer]->m_Insta1on1_id != -1 && Killer != m_pPlayer->GetCID() && (GameServer()->m_apPlayers[Killer]->m_IsInstaArena_gdm || GameServer()->m_apPlayers[Killer]->m_IsInstaArena_idm)) //is in 1on1
-	{
-		GameServer()->m_apPlayers[Killer]->m_Insta1on1_score++;
-		str_format(aBuf, sizeof(aBuf), "%s:%d killed %s:%d", Server()->ClientName(Killer), GameServer()->m_apPlayers[Killer]->m_Insta1on1_score, Server()->ClientName(m_pPlayer->GetCID()), m_pPlayer->m_Insta1on1_score);
-		if (!GameServer()->m_apPlayers[Killer]->m_HideInsta1on1_killmessages)
-		{
-			GameServer()->SendChatTarget(Killer, aBuf);
-		}
-		if (!m_pPlayer->m_HideInsta1on1_killmessages)
-		{
-			GameServer()->SendChatTarget(m_pPlayer->GetCID(), aBuf);
-		}
-		if (GameServer()->m_apPlayers[Killer]->m_Insta1on1_score >= 5)
-		{
-			GameServer()->WinInsta1on1(Killer, m_pPlayer->GetCID());
-		}
-	}
-
-	//balance battel
-	if (m_pPlayer->m_IsBalanceBatteling && GameServer()->m_BalanceBattleState == 2) //ingame in a balance battle
-	{
-		if (GameServer()->m_BalanceID1 == m_pPlayer->GetCID())
-		{
-			if (GameServer()->m_apPlayers[GameServer()->m_BalanceID2])
-			{
-				GameServer()->SendChatTarget(GameServer()->m_BalanceID2, "[balance] you won!");
-				GameServer()->SendChatTarget(GameServer()->m_BalanceID1, "[balance] you lost!");
-				GameServer()->m_apPlayers[GameServer()->m_BalanceID1]->m_IsBalanceBatteling = false;
-				GameServer()->m_apPlayers[GameServer()->m_BalanceID2]->m_IsBalanceBatteling = false;
-				GameServer()->m_BalanceBattleState = 0;
-				if (GameServer()->GetPlayerChar(GameServer()->m_BalanceID2))
-				{
-					GameServer()->GetPlayerChar(GameServer()->m_BalanceID2)->Die(GameServer()->m_BalanceID2, WEAPON_SELF);
-				}
-				//dbg_msg("balance", "%s:%d lost and %s:%d got killed too", Server()->ClientName(GameServer()->m_BalanceID1), GameServer()->m_BalanceID1, Server()->ClientName(GameServer()->m_BalanceID2), GameServer()->m_BalanceID2);
-				GameServer()->StopBalanceBattle();
-			}
-		}
-		else if (GameServer()->m_BalanceID2 == m_pPlayer->GetCID())
-		{
-			if (GameServer()->m_apPlayers[GameServer()->m_BalanceID1])
-			{
-				GameServer()->SendChatTarget(GameServer()->m_BalanceID1, "[balance] you won!");
-				GameServer()->SendChatTarget(GameServer()->m_BalanceID2, "[balance] you lost!");
-				GameServer()->m_apPlayers[GameServer()->m_BalanceID1]->m_IsBalanceBatteling = false;
-				GameServer()->m_apPlayers[GameServer()->m_BalanceID2]->m_IsBalanceBatteling = false;
-				GameServer()->m_BalanceBattleState = 0;
-				if (GameServer()->GetPlayerChar(GameServer()->m_BalanceID1))
-				{
-					GameServer()->GetPlayerChar(GameServer()->m_BalanceID1)->Die(GameServer()->m_BalanceID1, WEAPON_SELF);
-				}
-				//dbg_msg("balance", "%s:%d lost and %s:%d got killed too", Server()->ClientName(GameServer()->m_BalanceID2), GameServer()->m_BalanceID2, Server()->ClientName(GameServer()->m_BalanceID1), GameServer()->m_BalanceID1);
-				GameServer()->StopBalanceBattle();
-			}
-		}
-	}
-
-	//blockwave minigame
-	//commented out cuz idk why people shouldnt be able to play alone lol
-	/*
-	if (m_pPlayer->m_IsBlockWaving)
-	{
-		if (GameServer()->CountBlockWavePlayers() < 2)
-		{
-			GameServer()->m_BlockWaveGameState = 0; //stop blockwaving game
-		}
-	}
-	*/
-
-	//ChillerDragon pvparena code
-	if (GameServer()->m_apPlayers[Killer])
-	{
-		if (GameServer()->GetPlayerChar(Killer) && Weapon != WEAPON_GAME && Weapon != WEAPON_SELF)
-		{
-			//GameServer()->GetPlayerChar(Killer)->m_Bloody = true;
-
-			if (GameServer()->GetPlayerChar(Killer)->m_IsPVParena)
-			{
-				if (GameServer()->m_apPlayers[Killer]->m_level > GameServer()->m_apPlayers[Killer]->m_max_level || //dont give xp on max lvl
-					GameServer()->IsSameIP(Killer, m_pPlayer->GetCID()) || //dont give xp on dummy kill
-					GameServer()->IsSameIP(m_pPlayer->GetCID(), GameServer()->m_apPlayers[Killer]->m_pvp_arena_last_kill_id) //dont give xp on killing same ip twice in a row
-					)
-				{
-					GameServer()->m_apPlayers[Killer]->MoneyTransaction(+150, "[PVP] +150 pvp_arena kill");
-					GameServer()->m_apPlayers[Killer]->m_pvp_arena_kills++;
-
-					str_format(aBuf, sizeof(aBuf), "[PVP] +150 money for killing %s", Server()->ClientName(m_pPlayer->GetCID()));
-					GameServer()->SendChatTarget(Killer, aBuf);
-				}
-				else
-				{
-					GameServer()->m_apPlayers[Killer]->MoneyTransaction(+150, "+150 pvp_arena kill");
-					GameServer()->m_apPlayers[Killer]->m_xp += 100;
-					GameServer()->m_apPlayers[Killer]->m_pvp_arena_kills++;
-
-					str_format(aBuf, sizeof(aBuf), "[PVP] +100 xp +150 money for killing %s", Server()->ClientName(m_pPlayer->GetCID()));
-					GameServer()->SendChatTarget(Killer, aBuf);
-				}
-
-				int r = rand() % 100;
-				if (r > 92)
-				{
-					GameServer()->m_apPlayers[Killer]->m_pvp_arena_tickets++;
-					GameServer()->SendChatTarget(Killer, "[PVP] +1 pvp_arena_ticket        (special random drop for kill)");
-				}
-				GameServer()->m_apPlayers[Killer]->m_pvp_arena_last_kill_id = m_pPlayer->GetCID();
-			}
-		}
-	}
-	if (m_pPlayer) //victim
-	{
-		//m_pPlayer->m_InfRainbow = true;
-		if (m_IsPVParena)
-		{
-			m_pPlayer->m_pvp_arena_deaths++;
-
-			str_format(aBuf, sizeof(aBuf), "[PVP] You lost the arena-fight because you were killed by %s.", Server()->ClientName(Killer));
-			GameServer()->SendChatTarget(m_pPlayer->GetCID(), aBuf);
-		}
-	}
-
-	//bomb
-	if (m_IsBombing)
-	{
-		GameServer()->SendChatTarget(m_pPlayer->GetCID(), "[BOMB] you lost bomb because you died.");
-	}
-
-	m_pPlayer->m_LastToucherID = -1;
 	return Killer;
 }
 

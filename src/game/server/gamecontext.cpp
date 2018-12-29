@@ -11476,7 +11476,7 @@ void CGameContext::PrintStats(int ID, int playerID)
 	SendChatTarget(ID, aBuf);
 	str_format(aBuf, sizeof(aBuf), "Level: %d", pPlayer->m_level);
 	SendChatTarget(ID, aBuf);
-	str_format(aBuf, sizeof(aBuf), "Xp: %d/%d", pPlayer->m_xp, pPlayer->m_neededxp);
+	str_format(aBuf, sizeof(aBuf), "Xp: %d/%d", pPlayer->m_xp, pPlayer->m_level);
 	SendChatTarget(ID, aBuf);
 	str_format(aBuf, sizeof(aBuf), "Coins: %d", pPlayer->m_money);
 	SendChatTarget(ID, aBuf);
