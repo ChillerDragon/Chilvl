@@ -355,46 +355,31 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 
 	m_AliveTime = Server()->Tick();
 
-
-	if (g_Config.m_SvInstagibMode)
+	m_aWeapons[0].m_Ammo = -1;
+	if (m_pPlayer->m_shotgun)
 	{
-		Teams()->OnCharacterStart(m_pPlayer->GetCID());
-		m_CpActive = -2;
+		m_aWeapons[2].m_Got = true;
+		m_aWeapons[2].m_Ammo = m_pPlayer->m_shotgun;
 	}
-
-	m_aWeapons[0].m_Ammo = -1; //this line is added by ChillerDragon to prevent hammer in vanilla mode to run out of ammo. Im sure this solution is a bit hacky ... to who ever who is reading this comment: feel free to fix the core of the problem.
-
-	if (!m_pPlayer->m_IsSurvivaling && !m_pPlayer->m_IsVanillaWeapons)
+	if (m_pPlayer->m_grenade)
 	{
-		m_aWeapons[1].m_Ammo = -1; // added by fokkonaut to have -1 (infinite) bullets of gun at spawn and not 10. after freeze you would have -1 anyways so why not when spawning
+		m_aWeapons[3].m_Got = true;
+		m_aWeapons[3].m_Ammo = m_pPlayer->m_grenade;
 	}
-
-	if (m_pPlayer->m_IsSurvivaling && !g_Config.m_SvSurvivalGunAmmo)
+	if (m_pPlayer->m_rifle)
 	{
-		m_aWeapons[1].m_Got = false;
-		m_Core.m_ActiveWeapon = WEAPON_HAMMER;
+		m_aWeapons[4].m_Got = true;
+		m_aWeapons[4].m_Ammo = m_pPlayer->m_rifle;
 	}
+	m_Health = 1 + m_pPlayer->m_life;
 
 	if (GetPlayer()->m_IsSurvivaling && GetPlayer()->m_IsSurvivalAlive == false)
 	{
 		GameServer()->LoadCosmetics(GetPlayer()->GetCID());
 	}
-
 	m_LastHitWeapon = -1;
-
-	m_pPlayer->m_SpawnShotgunActive = 0;
-	m_pPlayer->m_SpawnGrenadeActive = 0;
-	m_pPlayer->m_SpawnRifleActive = 0;
-
-	if (g_Config.m_SvAllowSpawnWeapons)
-	{
-		SetSpawnWeapons();
-	}
-
 	SaveRealInfos();
-
 	UnsetSpookyGhost();
-
 	if (m_pPlayer->m_HadFlagOnDeath)
 	{
 		m_pPlayer->m_ChangeTeamOnFlag = true;
@@ -2299,31 +2284,37 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 #if defined(CONF_DEBUG)
 	CALL_STACK_ADD();
 #endif
-	//Block points check for touchers (weapons)
-	if ((Weapon == WEAPON_GRENADE || Weapon == WEAPON_HAMMER || Weapon == WEAPON_SHOTGUN || Weapon == WEAPON_RIFLE) && GameServer()->m_apPlayers[From])
+
+	// char aBuf[128];
+	// str_format(aBuf, sizeof(aBuf), "raw dmg=%d", Dmg);
+	// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+
+	if (GameServer()->m_apPlayers[From])
 	{
-		if (From != m_pPlayer->GetCID())
+		if (Weapon == 0)
 		{
-			m_pPlayer->m_LastToucherID = From;
-			m_pPlayer->m_LastTouchTicks = 0;
-			m_LastHitWeapon = Weapon;
+			Dmg += GameServer()->m_apPlayers[From]->m_hammer;
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "hammer dmg");
 		}
+		else if (Weapon == 1)
+		{
+			Dmg += GameServer()->m_apPlayers[From]->m_gun;
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "gun dmg");
+		}
+		else if (Weapon == 2)
+		{
+			Dmg += GameServer()->m_apPlayers[From]->m_shotgun;
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "shotgun dmg");
+		}
+		else if (Weapon == 3)
+		{
+			Dmg += GameServer()->m_apPlayers[From]->m_grenade;
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "grenade dmg");
+		}	
 	}
 
-	////dragon test [FNN] isTouched check
-	if (m_pPlayer->m_IsDummy && m_pPlayer->m_DummyMode == 25 && m_Dummy_nn_ready && From != m_pPlayer->GetCID())
-	{
-		if ((Weapon == WEAPON_GRENADE || Weapon == WEAPON_HAMMER || Weapon == WEAPON_SHOTGUN || Weapon == WEAPON_RIFLE) && GameServer()->m_apPlayers[From])
-		{
-			m_Dummy_nn_touched_by_humans = true;
-			char aBuf[128];
-			str_format(aBuf, sizeof(aBuf), "[FNN] please stop shooting me %s", Server()->ClientName(From));
-			GameServer()->SendChat(m_pPlayer->GetCID(), CGameContext::CHAT_ALL, aBuf);
-		}
-
-		//return false; //removes hammer knockback
-	}
-
+	// str_format(aBuf, sizeof(aBuf), "updated dmg=%d", Dmg);
+	// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
 
 	//zCatch ChillerDragon
 	if (g_Config.m_SvInstagibMode || (m_pPlayer->m_IsInstaMode_gdm && GameServer()->m_apPlayers[From]->m_IsInstaMode_gdm) || (m_pPlayer->m_IsInstaMode_idm && GameServer()->m_apPlayers[From]->m_IsInstaMode_idm)) //in (all instagib modes) or (both players in gdm/idm mode) --->  1hit
@@ -2345,9 +2336,9 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 			{
 				Dmg = max(1, Dmg / 2);    //commented comment out was probably a bug with the max() function better keep lines u dont undertsnad //testy NUCLEARTEASTY commented out by ChillerDragon testycode: 2gf43
 
-				if (m_pPlayer->m_IsVanillaCompetetive && Weapon == WEAPON_RIFLE)
+				if (Weapon == WEAPON_RIFLE)
 				{
-					return false; //no rifle self damage in competetive vanilla games (for example survival)
+					return false; //no rifle self damage
 				}
 			}
 

@@ -313,14 +313,7 @@ bool CLaser::HitCharacter(vec2 From, vec2 To)
 			else
 			{
 				pHit->UnFreeze();
-				if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_IsVanillaCompetetive)
-				{
-					pHit->TakeDamage(vec2(0.f, 0.f), 5, m_Owner, WEAPON_RIFLE);
-				}
-				else
-				{
-					pHit->TakeDamage(vec2(0.f, 0.f), 100, m_Owner, WEAPON_RIFLE);
-				}
+				pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle, m_Owner, WEAPON_RIFLE);
 			}
 		}
 	}

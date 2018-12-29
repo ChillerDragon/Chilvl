@@ -11490,4 +11490,6 @@ void CGameContext::PrintStats(int ID, int playerID)
 	SendChatTarget(ID, aBuf);
 	str_format(aBuf, sizeof(aBuf), "Rifle: %d", pPlayer->m_rifle);
 	SendChatTarget(ID, aBuf);
+	str_format(aBuf, sizeof(aBuf), "Life: %d", pPlayer->m_life);
+	SendChatTarget(ID, aBuf);
 }
