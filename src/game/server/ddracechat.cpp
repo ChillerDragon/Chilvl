@@ -2256,6 +2256,11 @@ void CGameContext::ConUpgrade(IConsole::IResult *pResult, void *pUserData)
 		pPlayer->m_gun++;
 		str_format(aBuf, sizeof(aBuf), "gun is now level %d!", pPlayer->m_gun);
 		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
+
+		if (pPlayer->m_gun == 20)
+		{
+			pSelf->SendChatTarget(pResult->m_ClientID, "full auto on (level 20 bonus)");
+		}
 	}
 	else if (!str_comp_nocase(aItem, "shotgun"))
 	{
