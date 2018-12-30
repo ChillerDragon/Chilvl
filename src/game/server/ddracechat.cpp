@@ -2285,6 +2285,11 @@ void CGameContext::ConUpgrade(IConsole::IResult *pResult, void *pUserData)
 	}
 	else if (!str_comp_nocase(aItem, "life"))
 	{
+		if (pPlayer->m_life > 49)
+		{
+			pSelf->SendChatTarget(pResult->m_ClientID, "life is at max level.");
+			return;
+		}
 		pPlayer->m_coins--;	
 		pPlayer->m_life++;
 		str_format(aBuf, sizeof(aBuf), "life is now level %d!", pPlayer->m_life);
