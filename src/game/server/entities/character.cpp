@@ -2294,22 +2294,22 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon)
 		if (Weapon == 0)
 		{
 			Dmg += GameServer()->m_apPlayers[From]->m_hammer;
-			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "hammer dmg");
+			// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "hammer dmg");
 		}
 		else if (Weapon == 1)
 		{
-			Dmg += GameServer()->m_apPlayers[From]->m_gun;
-			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "gun dmg");
+			Dmg += GameServer()->m_apPlayers[From]->m_gun / 2;
+			// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "gun dmg");
 		}
 		else if (Weapon == 2)
 		{
 			Dmg += GameServer()->m_apPlayers[From]->m_shotgun;
-			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "shotgun dmg");
+			// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "shotgun dmg");
 		}
 		else if (Weapon == 3)
 		{
 			Dmg += GameServer()->m_apPlayers[From]->m_grenade;
-			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "grenade dmg");
+			// GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "grenade dmg");
 		}	
 	}
 
