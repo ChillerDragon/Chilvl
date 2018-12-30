@@ -312,8 +312,14 @@ bool CLaser::HitCharacter(vec2 From, vec2 To)
 			}
 			else
 			{
-				pHit->UnFreeze();
-				pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle, m_Owner, WEAPON_RIFLE);
+				if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle > 19)
+				{
+					pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle * 2, m_Owner, WEAPON_RIFLE);
+				}
+				else
+				{
+					pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle, m_Owner, WEAPON_RIFLE);
+				}
 			}
 		}
 	}

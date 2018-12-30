@@ -2277,6 +2277,11 @@ void CGameContext::ConUpgrade(IConsole::IResult *pResult, void *pUserData)
 		pPlayer->m_rifle++;
 		str_format(aBuf, sizeof(aBuf), "rifle is now level %d!", pPlayer->m_rifle);
 		pSelf->SendChatTarget(pResult->m_ClientID, aBuf);
+
+		if (pPlayer->m_rifle == 20)
+		{
+			pSelf->SendChatTarget(pResult->m_ClientID, "x2 rifle damage (level 20 bonus)");
+		}
 	}
 	else if (!str_comp_nocase(aItem, "life"))
 	{
