@@ -6914,6 +6914,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					if (g_Config.m_SvTestingCommands)
 					{
 						pPlayer->m_coins += 100;
+						pPlayer->m_rifle = 28;
 						SendChatTarget(ClientID, "cheated 100 coins!");
 					}
 					return;

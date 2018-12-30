@@ -291,34 +291,30 @@ bool CLaser::HitCharacter(vec2 From, vec2 To)
 			}
 		}
 		
-		if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_IsInstaMode_fng)
+		if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_TaserOn)
 		{
-			if (g_Config.m_SvOnFireMode == 1 && pHit->m_FreezeTime == 0)
+			pHit->m_FreezeTime = 5 * GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_TaserLevel;
+			pHit->TakeDamage(vec2(0.f, 0.f), 100, m_Owner, WEAPON_RIFLE);
+			pHit->m_GotTasered = true;
+		}
+		else
+		{
+			// level 20 x2 dmg
+			if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle > 19)
+			{
+				pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle * 2, m_Owner, WEAPON_RIFLE);
+			}
+			else
+			{
+				pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle, m_Owner, WEAPON_RIFLE);
+			}
+
+			// level 30 onfire mode
+			if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle > 29)
 			{
 				if (pHit->GetPlayer() && pHit->GetPlayer()->GetCID() != m_Owner)
 				{
 					GameServer()->GetPlayerChar(m_Owner)->m_OnFire = true;
-				}
-			}
-			pHit->TakeDamage(vec2(0.f, 0.f), 100, m_Owner, WEAPON_RIFLE);
-		}
-		else
-		{
-			if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_TaserOn)
-			{
-				pHit->m_FreezeTime = 5 * GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_TaserLevel;
-				pHit->TakeDamage(vec2(0.f, 0.f), 100, m_Owner, WEAPON_RIFLE);
-				pHit->m_GotTasered = true;
-			}
-			else
-			{
-				if (GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle > 19)
-				{
-					pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle * 2, m_Owner, WEAPON_RIFLE);
-				}
-				else
-				{
-					pHit->TakeDamage(vec2(0.f, 0.f), GameServer()->GetPlayerChar(m_Owner)->GetPlayer()->m_rifle, m_Owner, WEAPON_RIFLE);
 				}
 			}
 		}
